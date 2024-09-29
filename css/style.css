@@ -1,0 +1,64 @@
+body{
+    height:100vh;
+    margin:0;
+    padding:0;
+    background-image: url('/images/background.jpg'); /* Set the background image */
+    background-size: cover; /* Makes the image cover the entire background */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat;
+}
+h3{
+    text-align: center;
+    
+ }
+.logo{
+   display:block;
+   margin:auto;
+   margin-top: 30px;
+   width:50px;
+}
+.container{
+    width:50vw;
+    height:60vh;
+    margin:auto;
+    background-image: url('/images/backchat.jpg');
+    border-radius: 9px;
+    border:2px solid blue;
+    overflow-y:scroll;
+} 
+.message{
+    
+    background-color: azure;
+    padding-left: 2px;
+    width:24%;
+    border-radius: 5px;
+    margin:7px 3px;
+    border:2px solid blue
+} 
+.right{
+    float:right;
+    clear:both;
+
+} 
+.left{
+    float:left;
+    clear:both;
+}
+
+#send-container{
+    
+    width:50vw;
+    text-align:center;
+    margin:auto;
+    
+}
+#messageinp{
+    width:80%;
+    margin-top: 2px;
+ border-radius: 4px;
+}
+.btn{
+    margin-top: 2px;
+    border-radius: 4px;
+} 
+
