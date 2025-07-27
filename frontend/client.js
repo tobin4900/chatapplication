@@ -1,5 +1,4 @@
 
-
 //client javascript file
 const backendURL =
   location.hostname === "localhost"
@@ -45,5 +44,6 @@ socket.on('user-joined',name=>{
     socket.on("leave",id=>{
         append(`${id} has gone`,"right");
     })
-    
+
+
 

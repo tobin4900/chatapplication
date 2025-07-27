@@ -1,50 +1,60 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const path = require('path');
 
-// Use CORS middleware for Express
-// app.use(cors({
-//     origin: 'http://127.0.0.1:5500', // Replace this with the front-end URL
-//     methods: ['GET', 'POST'],
-//     credentials: true
-// }));
+// Configure CORS properly
+app.use(cors({
+    origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
 
-// Create HTTP server and configure Socket.io
+// Serve static files from frontend
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Handle client-side routing - should come AFTER static files
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
-  cors: {
-    origin: "*", // Same front-end URL
-    methods: ["GET", "POST"],
-    credentials: true
-  }
+    cors: {
+        origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
+        methods: ["GET", "POST"],
+        credentials: true
+    }
 });
-const user={};
+
+const user = {};
 
 io.on('connection', (socket) => {
-   
-  socket.on("new-user-joined",name=>{
-    user[socket.id]=name;
-    console.log(`user: ${user[socket.id]} with id:${socket.id} has joined`);
-    socket.broadcast.emit('user-joined',name);
-     console.log(`${name} has joined vscode the chat`);
-})
- //brodcast the message recieved from client to all other client
- socket.on("send",message=>{
-  console.log(`message sent by client to server was recieved and it was ${message}`);
-  socket.broadcast.emit("recieve",{message:message,name:user[socket.id]});
- })
+    socket.on("new-user-joined", name => {
+        user[socket.id] = name;
+        console.log(`user: ${name} with id:${socket.id} has joined`);
+        socket.broadcast.emit('user-joined', name);
+    });
 
- 
-  socket.on('disconnect', () => {
-    console.log(`user: ${user[socket.id]} with id:${socket.id} has left`);
-    socket.broadcast.emit("leave",user[socket.id]);
-    delete user[socket.id];
-    
-  });
+    socket.on("send", message => {
+        console.log(`message from ${user[socket.id]}: ${message}`);
+        socket.broadcast.emit("recieve", {
+            message: message,
+            name: user[socket.id]
+        });
+    });
+
+    socket.on('disconnect', () => {
+        const username = user[socket.id];
+        if (username) {
+            console.log(`user: ${username} with id:${socket.id} has left`);
+            socket.broadcast.emit("leave", username);
+            delete user[socket.id];
+        }
+    });
 });
 
-// Start the server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
