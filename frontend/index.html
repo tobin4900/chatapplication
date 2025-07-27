@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat Application</title>
+
+  <!-- ✅ Use CDN version of socket.io for production -->
+  <script src="https://cdn.socket.io/4.8.0/socket.io.min.js" defer></script>
+  <script src="./client.js" defer></script>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <nav>
+    <!-- ✅ Use forward slashes for image paths -->
+    <img class="logo" src="images/chat.png" alt="Chat Logo">
+  </nav>
+  <h3>Chat Application</h3>
+  <div class="container"></div>
+  <div class="send">
+    <form action="#" id="send-container">
+      <input type="text" placeholder="Type a message" name="messageinp" id="messageinp">
+      <button class="btn" type="submit">Send</button>
+    </form>
+  </div>
+</body>
+</html>

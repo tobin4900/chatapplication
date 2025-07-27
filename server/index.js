@@ -13,7 +13,7 @@ const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
-    origin: "http://127.0.0.1:5500", // Same front-end URL
+    origin: "*", // Same front-end URL
     methods: ["GET", "POST"],
     credentials: true
   }
