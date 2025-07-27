@@ -1,11 +1,11 @@
 
 //client javascript file
-const backendURL =
-  location.hostname === "localhost"
-    ? "http://localhost:3000"
-    : "https://chat-backend-tobin.onrender.com";
+// const backendURL =
+//   location.hostname === "localhost"
+//     ? "http://localhost:3000"
+//     : "https://chat-backend-tobin.onrender.com";
 
-const socket = io(backendURL);
+const socket = io();
 
 
 //updating dom to display user joined the chat

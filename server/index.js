@@ -1,60 +1,55 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
 const path = require('path');
+const http = require('http');
 
-// Configure CORS properly
-app.use(cors({
-    origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
-    methods: ['GET', 'POST'],
-    credentials: true
-}));
+const app = express();
+const server = http.createServer(app);
 
-// Serve static files from frontend
-app.use(express.static(path.join(__dirname, '../frontend')));
-
-// Handle client-side routing - should come AFTER static files
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
-const server = require('http').createServer(app);
+// ✅ Setup Socket.IO
 const io = require('socket.io')(server, {
-    cors: {
-        origin: ["http://127.0.0.1:5500", "http://localhost:5500"],
-        methods: ["GET", "POST"],
-        credentials: true
-    }
+  cors: {
+    origin: "*",  // For public chat, allow all
+    methods: ["GET", "POST"]
+  }
 });
 
-const user = {};
+// ✅ Serve static files from frontend folder
+app.use(express.static(path.join(__dirname, 'frontend')));
+
+// ✅ Send index.html for any route (SPA support)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/index.html'));
+});
+
+// ✅ In-memory user store
+const users = {};
 
 io.on('connection', (socket) => {
-    socket.on("new-user-joined", name => {
-        user[socket.id] = name;
-        console.log(`user: ${name} with id:${socket.id} has joined`);
-        socket.broadcast.emit('user-joined', name);
-    });
+  socket.on("new-user-joined", name => {
+    users[socket.id] = name;
+    console.log(`${name} joined the chat`);
+    socket.broadcast.emit("user-joined", name);
+  });
 
-    socket.on("send", message => {
-        console.log(`message from ${user[socket.id]}: ${message}`);
-        socket.broadcast.emit("recieve", {
-            message: message,
-            name: user[socket.id]
-        });
+  socket.on("send", message => {
+    socket.broadcast.emit("receive", {
+      message,
+      name: users[socket.id]
     });
+  });
 
-    socket.on('disconnect', () => {
-        const username = user[socket.id];
-        if (username) {
-            console.log(`user: ${username} with id:${socket.id} has left`);
-            socket.broadcast.emit("leave", username);
-            delete user[socket.id];
-        }
-    });
+  socket.on("disconnect", () => {
+    const name = users[socket.id];
+    if (name) {
+      socket.broadcast.emit("leave", name);
+      console.log(`${name} left the chat`);
+      delete users[socket.id];
+    }
+  });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
