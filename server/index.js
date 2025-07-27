@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
+const helmet = require('helmet'); // NEW: Security headers
 
 const app = express();
 const server = http.createServer(app);
@@ -9,24 +10,39 @@ const server = http.createServer(app);
 // ✅ Setup Socket.IO
 const io = require('socket.io')(server, {
   cors: {
-    origin: "*",  // For public chat, allow all
+    origin: "*", // For public chat, allow all
     methods: ["GET", "POST"]
   }
 });
 
-// ✅ Optional: Set Content Security Policy to allow Google Fonts (fix font error)
-app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;");
-  next();
-});
+// ✅ Helmet CSP to allow fonts, styles, scripts from trusted sources
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "https://fonts.googleapis.com", "'unsafe-inline'"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        connectSrc: ["'self'", "*"], // For socket connections
+        imgSrc: ["'self'", "data:"]
+      },
+    },
+  })
+);
 
-// ✅ CORS middleware (safe to include)
+// ✅ CORS middleware
 app.use(cors());
 
-// ✅ Serve static files from frontend folder
+// ✅ Serve static files from frontend
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-// ✅ Send index.html for any route (SPA support)
+// ✅ Test route to verify backend
+app.get('/', (req, res) => {
+  res.send("Chat Backend is running ✅");
+});
+
+// ✅ Serve frontend for SPA routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/index.html'));
 });
@@ -58,7 +74,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// ✅ Start the server
+// ✅ Start server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
