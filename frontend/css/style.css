@@ -1,8 +1,10 @@
+/* ✅ Use Roboto font globally */
 body {
+    font-family: 'Roboto', sans-serif;
     height: 100vh;
     margin: 0;
     padding: 0;
-    background-image: url('../images/background.jpg'); /* ✅ Fixed path */
+    background-image: url('../images/background.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -23,7 +25,7 @@ h3 {
     width: 50vw;
     height: 60vh;
     margin: auto;
-    background-image: url('../images/backchat.jpg'); /* ✅ Fixed path */
+    background-image: url('../images/backchat.jpg');
     border-radius: 9px;
     border: 2px solid blue;
     overflow-y: scroll;
