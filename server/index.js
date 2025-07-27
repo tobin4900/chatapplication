@@ -14,6 +14,15 @@ const io = require('socket.io')(server, {
   }
 });
 
+// ✅ Optional: Set Content Security Policy to allow Google Fonts (fix font error)
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;");
+  next();
+});
+
+// ✅ CORS middleware (safe to include)
+app.use(cors());
+
 // ✅ Serve static files from frontend folder
 app.use(express.static(path.join(__dirname, 'frontend')));
 
@@ -49,6 +58,7 @@ io.on('connection', (socket) => {
   });
 });
 
+// ✅ Start the server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
