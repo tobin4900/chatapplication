@@ -28,9 +28,7 @@ Helmet
 Hosted on Render
 
 Project Structure
-bash
-Copy
-Edit
+
 chat-app/
 │── frontend/           # Static HTML, CSS, JS files
 │── index.js            # Main server file
@@ -38,33 +36,23 @@ chat-app/
 Installation & Setup
 Clone the repository:
 
-bash
-Copy
-Edit
+
 git clone https://github.com/yourusername/chat-app.git
 Navigate to the project folder:
 
-bash
-Copy
-Edit
+
 cd chat-app
 Install dependencies:
 
-bash
-Copy
-Edit
+
 npm install
 Start the server:
 
-bash
-Copy
-Edit
+
 npm start
 Open your browser and visit:
 
-arduino
-Copy
-Edit
+
 http://localhost:3000
 Socket Events (API Documentation)
 new-user-joined – emitted when a new user joins the chat
