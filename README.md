@@ -37,7 +37,7 @@ Installation & Setup
 Clone the repository:
 
 
-git clone https://github.com/yourusername/chat-app.git
+git clone https://github.com/tobin4900/chat-app.git
 Navigate to the project folder:
 
 
